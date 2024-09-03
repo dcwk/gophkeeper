@@ -6,14 +6,6 @@ package gophkeeper;
 
 option go_package = "gophkeeper/proto";
 
-message Order {
-  string id = 1;
-  repeated string items = 2;
-  string description = 3;
-  float price = 4;
-  string destination = 5;
-}
-
 message AuthRequest {
   string login = 1;
   string password = 2;
