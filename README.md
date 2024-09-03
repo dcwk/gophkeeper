@@ -56,4 +56,6 @@ CVV код не храним в бд и не отображаем в форме 
 https://miro.com/app/board/uXjVKqtL9kQ=/?share_link_id=969528804638
 ![doc/es1.png](doc/es1.png)
 ### Таблицы бд
+![doc/image2.jpg](doc/image2.jpg)
+
 
