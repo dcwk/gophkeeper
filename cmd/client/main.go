@@ -1,31 +1,76 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
+type Contact struct {
+	firstName   string
+	lastName    string
+	email       string
+	phoneNumber string
+	state       string
+	business    bool
+}
+
+var contacts []Contact
+
+var app = tview.NewApplication()
+var text = tview.NewTextView().
+	SetTextColor(tcell.ColorGreen).
+	SetText("(a) to add a new contact \n(q) to quit")
+var form = tview.NewForm()
+var pages = tview.NewPages()
+
 func main() {
-	app := tview.NewApplication()
-	form := tview.NewForm().
-		AddDropDown("Title", []string{"Mr.", "Ms.", "Mrs.", "Dr.", "Prof."}, 0, nil).
-		AddInputField("First name", "", 20, nil, nil).
-		AddInputField("Last name", "", 20, nil, nil).
-		AddTextArea("Address", "", 40, 0, 0, nil).
-		AddTextView("Notes", "This is just a demo.\nYou can enter whatever you wish.", 40, 2, true, false).
-		AddCheckbox("Age 18+", false, nil).
-		AddPasswordField("Password", "", 10, '*', nil).
-		AddButton("Save", test).
-		AddButton("Quit", func() {
+	pages.AddPage("Menu", text, true, true)
+	pages.AddPage("Add Contact", form, true, false)
+
+	app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Rune() == 113 {
 			app.Stop()
-		})
-	form.SetBorder(true).SetTitle("Enter some data").SetTitleAlign(tview.AlignLeft)
-	if err := app.SetRoot(form, true).EnableMouse(true).EnablePaste(true).Run(); err != nil {
+		} else if event.Rune() == 97 {
+			addContactForm()
+			pages.SwitchToPage("Add Contact")
+		}
+		return event
+	})
+
+	if err := app.SetRoot(pages, true).EnableMouse(true).Run(); err != nil {
 		panic(err)
 	}
 }
 
-func test() {
-	fmt.Println("Hello world")
+func addContactForm() {
+	contact := Contact{}
+
+	form.AddInputField("First Name", "", 20, nil, func(firstName string) {
+		contact.firstName = firstName
+	})
+
+	form.AddInputField("Last Name", "", 20, nil, func(lastName string) {
+		contact.lastName = lastName
+	})
+
+	form.AddInputField("Email", "", 20, nil, func(email string) {
+		contact.email = email
+	})
+
+	form.AddInputField("Phone", "", 20, nil, func(phone string) {
+		contact.phoneNumber = phone
+	})
+
+	//// states is a slice of state abbreviations. Code is in the repo.
+	//form.AddDropDown("State", states, 0, func(state string, index int) {
+	//	contact.state = state
+	//})
+
+	form.AddCheckbox("Business", false, func(business bool) {
+		contact.business = business
+	})
+
+	form.AddButton("Save", func() {
+		contacts = append(contacts, contact)
+	})
 }
