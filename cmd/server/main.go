@@ -20,4 +20,5 @@ func main() {
 }
 
 func (s *GophkeeperServer) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Gophkeeper_SearchOrdersServer) error {
+
 }

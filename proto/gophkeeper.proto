@@ -14,6 +14,94 @@ message Order {
   string destination = 5;
 }
 
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  int64 user_id = 1;
+}
+
+message GetUserSecretsRequest {
+}
+
+message GetUserSecretsResponse {
+}
+
+message SaveAuthPairRequest {
+  string login = 1;
+  string password = 2;
+  string metadata = 3;
+}
+
+message SaveAuthPairResponse {
+  int64 auth_pair_id = 1;
+}
+
+message SavePayCardRequest {
+}
+
+message SavePayCardResponse {
+}
+
+message SaveBinaryDataResponse {
+  int64 file_id = 1;
+}
+
+message SaveTextDataResponse {
+  int64 file_id = 1;
+}
+
+enum Type {
+  AUTH_PAIR = 0;
+  BINARY = 1;
+  TEXT = 2;
+  PAY_CARD = 3;
+}
+
+message DeleteItemRequest {
+  int64 id = 1;
+  Type type = 2;
+}
+
+message DeleteItemResponse {
+}
+
+message GetAuthPairRequest {
+  int64 id = 1;
+}
+
+message GetAuthPairResponse {
+  string login = 1;
+  string password = 2;
+}
+
+message GetPayCardRequest {
+  int64 id = 1;
+}
+
+message GetPayCardResponse {
+}
+
+message GetBinaryDataRequest {
+  int64 id = 1;
+}
+
+message GetTextDataRequest {
+  int64 id = 1;
+}
+
 service Gophkeeper {
-  rpc searchOrders(google.protobuf.StringValue) returns (stream Order);
+  rpc Auth(AuthRequest) returns (AuthResponse);
+  rpc GetUserSecretsList(GetUserSecretsRequest) returns (GetUserSecretsResponse);
+  rpc SaveAuthPair(SaveAuthPairRequest) returns (SaveAuthPairResponse);
+  rpc SavePayCard(SavePayCardRequest) returns (SavePayCardResponse);
+  rpc SaveBinaryData(stream google.protobuf.StringValue) returns (SaveBinaryDataResponse);
+  rpc SaveTextData(stream google.protobuf.StringValue) returns (SaveTextDataResponse);
+  rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse);
+  rpc GetAuthPair(GetAuthPairRequest) returns (GetAuthPairResponse);
+  rpc GetPayCard(GetPayCardRequest) returns (GetPayCardResponse);
+  rpc GetBinaryData(GetBinaryDataRequest) returns (stream google.protobuf.StringValue);
+  rpc GetTextData(GetTextDataRequest) returns (stream google.protobuf.StringValue);
 }
