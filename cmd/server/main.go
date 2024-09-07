@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/golang/protobuf/ptypes/wrappers"
+	"log"
 
+	"practicum/gophkeeper/internal/application"
+	"practicum/gophkeeper/internal/config"
 	pb "practicum/gophkeeper/proto"
 )
 
@@ -11,14 +13,10 @@ type GophkeeperServer struct {
 }
 
 func main() {
-	//conf, err := config.NewServerConf()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//application.Run(conf)
-}
+	conf, err := config.NewServerConf()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-func (s *GophkeeperServer) SearchOrders(searchQuery *wrappers.StringValue, stream pb.Gophkeeper_SearchOrdersServer) error {
-
+	application.Run(conf)
 }
