@@ -12,7 +12,16 @@ message AuthRequest {
 }
 
 message AuthResponse {
-  int64 user_id = 1;
+  string jwt_token = 1;
+}
+
+message RegisterRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
+  string user_id = 1;
 }
 
 message GetUserSecretsRequest {
@@ -86,6 +95,7 @@ message GetTextDataRequest {
 
 service Gophkeeper {
   rpc Auth(AuthRequest) returns (AuthResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc GetUserSecretsList(GetUserSecretsRequest) returns (GetUserSecretsResponse);
   rpc SaveAuthPair(SaveAuthPairRequest) returns (SaveAuthPairResponse);
   rpc SavePayCard(SavePayCardRequest) returns (SavePayCardResponse);
