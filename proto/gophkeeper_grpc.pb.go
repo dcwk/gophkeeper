@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Gophkeeper_Auth_FullMethodName               = "/gophkeeper.Gophkeeper/Auth"
+	Gophkeeper_Register_FullMethodName           = "/gophkeeper.Gophkeeper/Register"
 	Gophkeeper_GetUserSecretsList_FullMethodName = "/gophkeeper.Gophkeeper/GetUserSecretsList"
 	Gophkeeper_SaveAuthPair_FullMethodName       = "/gophkeeper.Gophkeeper/SaveAuthPair"
 	Gophkeeper_SavePayCard_FullMethodName        = "/gophkeeper.Gophkeeper/SavePayCard"
@@ -38,6 +39,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GophkeeperClient interface {
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	GetUserSecretsList(ctx context.Context, in *GetUserSecretsRequest, opts ...grpc.CallOption) (*GetUserSecretsResponse, error)
 	SaveAuthPair(ctx context.Context, in *SaveAuthPairRequest, opts ...grpc.CallOption) (*SaveAuthPairResponse, error)
 	SavePayCard(ctx context.Context, in *SavePayCardRequest, opts ...grpc.CallOption) (*SavePayCardResponse, error)
@@ -62,6 +64,16 @@ func (c *gophkeeperClient) Auth(ctx context.Context, in *AuthRequest, opts ...gr
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AuthResponse)
 	err := c.cc.Invoke(ctx, Gophkeeper_Auth_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophkeeperClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterResponse)
+	err := c.cc.Invoke(ctx, Gophkeeper_Register_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -197,6 +209,7 @@ type Gophkeeper_GetTextDataClient = grpc.ServerStreamingClient[wrapperspb.String
 // for forward compatibility.
 type GophkeeperServer interface {
 	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
+	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	GetUserSecretsList(context.Context, *GetUserSecretsRequest) (*GetUserSecretsResponse, error)
 	SaveAuthPair(context.Context, *SaveAuthPairRequest) (*SaveAuthPairResponse, error)
 	SavePayCard(context.Context, *SavePayCardRequest) (*SavePayCardResponse, error)
@@ -219,6 +232,9 @@ type UnimplementedGophkeeperServer struct{}
 
 func (UnimplementedGophkeeperServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (UnimplementedGophkeeperServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedGophkeeperServer) GetUserSecretsList(context.Context, *GetUserSecretsRequest) (*GetUserSecretsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserSecretsList not implemented")
@@ -285,6 +301,24 @@ func _Gophkeeper_Auth_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GophkeeperServer).Auth(ctx, req.(*AuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Gophkeeper_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophkeeperServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Gophkeeper_Register_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophkeeperServer).Register(ctx, req.(*RegisterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -443,6 +477,10 @@ var Gophkeeper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Auth",
 			Handler:    _Gophkeeper_Auth_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _Gophkeeper_Register_Handler,
 		},
 		{
 			MethodName: "GetUserSecretsList",

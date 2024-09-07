@@ -1,9 +1,13 @@
 package cli
 
 import (
+	"context"
 	"log"
 
 	"github.com/spf13/cobra"
+
+	grpcclient "practicum/gophkeeper/internal/client/grpc"
+	"practicum/gophkeeper/proto"
 )
 
 var registerUser = &cobra.Command{
@@ -37,5 +41,17 @@ func doRegister(cmd *cobra.Command, args []string) {
 		log.Fatalf("unable to get 'password' flag: %v", err)
 	}
 
-	log.Printf("Registering user with login: %s, pass: %s", login, password)
+	registerRequest := &proto.RegisterRequest{
+		Login:    login,
+		Password: password,
+	}
+
+	connection := grpcclient.OpenGrpcClientConnection()
+	client := proto.NewGophkeeperClient(connection)
+	resp, err := client.Register(context.Background(), registerRequest)
+	if err != nil {
+		log.Fatalf("Cannot register user: %v", err)
+	}
+
+	log.Printf("User successfully registered with id %s", resp.UserId)
 }
