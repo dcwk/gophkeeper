@@ -6,8 +6,8 @@ import (
 	"log"
 	"net"
 
-	"practicum/gophkeeper/internal/config"
-	"practicum/gophkeeper/proto"
+	"github.com/dcwk/gophkeeper/internal/config"
+	"github.com/dcwk/gophkeeper/proto"
 
 	"google.golang.org/grpc"
 )

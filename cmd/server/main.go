@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"practicum/gophkeeper/internal/application"
-	"practicum/gophkeeper/internal/config"
-	pb "practicum/gophkeeper/proto"
+	"github.com/dcwk/gophkeeper/internal/application"
+	"github.com/dcwk/gophkeeper/internal/config"
+	pb "github.com/dcwk/gophkeeper/proto"
 )
 
 type GophkeeperServer struct {

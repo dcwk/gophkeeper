@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	grpcclient "practicum/gophkeeper/internal/client/grpc"
-	"practicum/gophkeeper/proto"
+	grpcclient "github.com/dcwk/gophkeeper/internal/client/grpc"
+	"github.com/dcwk/gophkeeper/proto"
 )
 
 var registerUser = &cobra.Command{

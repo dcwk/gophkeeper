@@ -1,7 +1,7 @@
 package main
 
 import (
-	"practicum/gophkeeper/internal/client/cli"
+	"github.com/dcwk/gophkeeper/internal/client/cli"
 )
 
 func main() {
