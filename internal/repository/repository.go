@@ -2,8 +2,10 @@ package repository
 
 import (
 	"context"
+
+	"github.com/dcwk/gophkeeper/proto"
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, request proto.AddUserRequest) (int64, error)
+	CreateUser(ctx context.Context, request proto.RegisterRequest) (int64, error)
 }
