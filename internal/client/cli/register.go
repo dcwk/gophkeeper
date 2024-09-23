@@ -5,8 +5,9 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
-	grpcclient "github.com/dcwk/gophkeeper/internal/client/grpc"
 	"github.com/dcwk/gophkeeper/proto"
 )
 
@@ -46,8 +47,12 @@ func doRegister(cmd *cobra.Command, args []string) {
 		Password: password,
 	}
 
-	connection := grpcclient.OpenGrpcClientConnection()
-	client := proto.NewGophkeeperClient(connection)
+	conn, err := grpc.NewClient("localhost:8081", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client := proto.NewGophkeeperClient(conn)
 	resp, err := client.Register(context.Background(), registerRequest)
 	if err != nil {
 		log.Fatalf("Cannot register user: %v", err)

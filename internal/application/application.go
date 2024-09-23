@@ -6,6 +6,9 @@ import (
 	"log"
 	"net"
 
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/reflection"
+
 	"github.com/dcwk/gophkeeper/internal/config"
 	"github.com/dcwk/gophkeeper/proto"
 
@@ -13,6 +16,9 @@ import (
 )
 
 type Application struct {
+	config     *config.ServerConf
+	container  *Container
+	grpcServer *grpc.Server
 }
 
 type GophkeeperServer struct {
@@ -20,24 +26,85 @@ type GophkeeperServer struct {
 	proto.UnimplementedGophkeeperServer
 }
 
-func (s *GophkeeperServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
-	fmt.Println(fmt.Sprintf("Success get data with login %s and password %s", req.Login, req.Password))
+func NewApp(ctx context.Context) (*Application, error) {
+	app := &Application{}
 
-	return &proto.RegisterResponse{UserId: "10"}, nil
+	err := app.initDependencies(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return app, nil
 }
 
-func Run(conf *config.ServerConf) {
-	listen, err := net.Listen("tcp", conf.RunAddress)
+func (app *Application) initDependencies(ctx context.Context) error {
+	inits := []func(ctx2 context.Context) error{
+		app.initConfig,
+		app.initContainer,
+		app.initGrpcServer,
+	}
+
+	for _, initFunc := range inits {
+		err := initFunc(ctx)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (app *Application) initConfig(ctx context.Context) error {
+	conf, err := config.NewServerConf()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s := grpc.NewServer()
-	server := GophkeeperServer{Conf: conf}
-	proto.RegisterGophkeeperServer(s, &server)
+	app.config = conf
+	return nil
+}
 
-	fmt.Println(fmt.Sprintf("gRPC server started at %s...", conf.RunAddress))
-	if err := s.Serve(listen); err != nil {
-		log.Fatal(err)
+func (app *Application) initContainer(ctx context.Context) error {
+	app.container = newContainer()
+
+	return nil
+}
+
+func (app *Application) initGrpcServer(ctx context.Context) error {
+	app.grpcServer = grpc.NewServer(grpc.Creds(insecure.NewCredentials()))
+
+	reflection.Register(app.grpcServer)
+
+	proto.RegisterGophkeeperServer(
+		app.grpcServer,
+		&GophkeeperServer{Conf: app.config},
+	)
+
+	return nil
+}
+
+func (app *Application) Start() error {
+	return app.runGRPCServer()
+}
+
+func (app *Application) runGRPCServer() error {
+	log.Println("starting gRPC server on %s", app.config.RunAddress)
+
+	list, err := net.Listen("tcp", app.config.RunAddress)
+	if err != nil {
+		return err
 	}
+
+	err = app.grpcServer.Serve(list)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *GophkeeperServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
+	fmt.Println(fmt.Sprintf("Success get data with login %s and password %s", req.Login, req.Password))
+
+	return &proto.RegisterResponse{UserId: "10"}, nil
 }

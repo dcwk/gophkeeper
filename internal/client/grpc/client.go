@@ -12,7 +12,6 @@ func OpenGrpcClientConnection() *grpc.ClientConn {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer conn.Close()
 
 	return conn
 }

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/dcwk/gophkeeper/internal/application"
-	"github.com/dcwk/gophkeeper/internal/config"
 	pb "github.com/dcwk/gophkeeper/proto"
 )
 
@@ -13,10 +13,16 @@ type GophkeeperServer struct {
 }
 
 func main() {
-	conf, err := config.NewServerConf()
+	ctx := context.Background()
+
+	a, err := application.NewApp(ctx)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to initialize application: %s", err)
 	}
 
-	application.Run(conf)
+	err = a.Start()
+	if err != nil {
+		log.Fatalf("failed to start application: %s", err)
+	}
+
 }
