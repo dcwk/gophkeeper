@@ -20,11 +20,6 @@ type Application struct {
 	grpcServer *grpc.Server
 }
 
-type GophkeeperServer struct {
-	Conf *config.ServerConf
-	proto.UnimplementedGophkeeperServer
-}
-
 func NewApp(ctx context.Context) (*Application, error) {
 	app := &Application{}
 
