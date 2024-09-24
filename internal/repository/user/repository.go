@@ -5,7 +5,7 @@ import (
 
 	"github.com/dcwk/gophkeeper/internal/infra/db"
 	"github.com/dcwk/gophkeeper/internal/repository"
-	"github.com/dcwk/gophkeeper/proto"
+	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 type repo struct {
@@ -16,6 +16,6 @@ func NewRepository(db db.Client) repository.UserRepository {
 	return &repo{db: db}
 }
 
-func (r *repo) CreateUser(ctx context.Context, request proto.RegisterRequest) (int64, error) {
+func (r *repo) CreateUser(ctx context.Context, request gophkeeper.RegisterRequest) (int64, error) {
 	return 1, nil
 }

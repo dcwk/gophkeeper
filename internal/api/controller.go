@@ -3,11 +3,11 @@ package api
 import (
 	"github.com/dcwk/gophkeeper/internal/repository"
 	"github.com/dcwk/gophkeeper/internal/service/user"
-	"github.com/dcwk/gophkeeper/proto"
+	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 type Controller struct {
-	proto.UnimplementedGophkeeperServer
+	gophkeeper.UnimplementedGophkeeperServer
 	userService *user.Service
 }
 

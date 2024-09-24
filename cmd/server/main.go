@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/dcwk/gophkeeper/internal/application"
-	pb "github.com/dcwk/gophkeeper/proto"
+	pb "github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 type GophkeeperServer struct {

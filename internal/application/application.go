@@ -8,11 +8,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
+	"google.golang.org/grpc"
+
 	"github.com/dcwk/gophkeeper/internal/closer"
 	"github.com/dcwk/gophkeeper/internal/config"
-	"github.com/dcwk/gophkeeper/proto"
-
-	"google.golang.org/grpc"
+	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 type Application struct {
@@ -70,7 +70,7 @@ func (app *Application) initGrpcServer(ctx context.Context) error {
 
 	reflection.Register(app.grpcServer)
 
-	proto.RegisterGophkeeperServer(
+	gophkeeper.RegisterGophkeeperServer(
 		app.grpcServer,
 		app.container.Controller(),
 	)

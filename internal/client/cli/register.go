@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/dcwk/gophkeeper/proto"
+	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 var registerUser = &cobra.Command{
@@ -42,7 +42,7 @@ func doRegister(cmd *cobra.Command, args []string) {
 		log.Fatalf("unable to get 'password' flag: %v", err)
 	}
 
-	registerRequest := &proto.RegisterRequest{
+	registerRequest := &gophkeeper.RegisterRequest{
 		Login:    login,
 		Password: password,
 	}
@@ -52,7 +52,7 @@ func doRegister(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	client := proto.NewGophkeeperClient(conn)
+	client := gophkeeper.NewGophkeeperClient(conn)
 	resp, err := client.Register(context.Background(), registerRequest)
 	if err != nil {
 		log.Fatalf("Cannot register user: %v", err)
