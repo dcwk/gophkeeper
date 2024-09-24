@@ -4,7 +4,7 @@
 // - protoc             v5.27.1
 // source: pkg/gophkeeper/gophkeeper.proto
 
-package proto
+package gophkeeper
 
 import (
 	context "context"

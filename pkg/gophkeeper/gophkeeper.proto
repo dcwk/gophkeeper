@@ -4,7 +4,7 @@ import "google/protobuf/wrappers.proto";
 
 package gophkeeper;
 
-option go_package = "gophkeeper/proto";
+option go_package = "gophkeeper/gophkeeper";
 
 message AuthRequest {
   string login = 1;
