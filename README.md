@@ -76,8 +76,7 @@ Secret {
     int id PK
     int userId
     enum secretType "LOGIN|TEXT|BINARY|PAYCARD"
-    double accrual
-    double withdrawal
+    string name
     timestamp createdAt
     timestamp updatedAt
 }
