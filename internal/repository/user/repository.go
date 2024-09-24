@@ -3,9 +3,21 @@ package user
 import (
 	"context"
 
+	sq "github.com/Masterminds/squirrel"
+
 	"github.com/dcwk/gophkeeper/internal/infra/db"
+	"github.com/dcwk/gophkeeper/internal/model"
 	"github.com/dcwk/gophkeeper/internal/repository"
-	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
+)
+
+const (
+	tableName = "user"
+
+	idColumn        = "id"
+	loginColumn     = "login"
+	passwordColumn  = "password"
+	createdAtColumn = "created_at"
+	updatedAtColumn = "updated_at"
 )
 
 type repo struct {
@@ -16,6 +28,28 @@ func NewRepository(db db.Client) repository.UserRepository {
 	return &repo{db: db}
 }
 
-func (r *repo) CreateUser(ctx context.Context, request gophkeeper.RegisterRequest) (int64, error) {
-	return 1, nil
+func (r *repo) CreateUser(ctx context.Context, user model.User) (int64, error) {
+	builder := sq.Insert(tableName).
+		PlaceholderFormat(sq.Dollar).
+		Columns(loginColumn, passwordColumn).
+		Values(user.Login, user.Password).
+		Suffix("RETURNING id")
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	q := db.Query{
+		Name:     "user_repository.Create",
+		QueryRaw: query,
+	}
+
+	var id int64
+	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }

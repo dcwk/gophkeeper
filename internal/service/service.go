@@ -7,5 +7,5 @@ import (
 )
 
 type UserService interface {
-	Register(ctx context.Context, user model.User) error
+	Register(ctx context.Context, user model.User) (int64, error)
 }

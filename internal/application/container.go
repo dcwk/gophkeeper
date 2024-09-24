@@ -11,15 +11,18 @@ import (
 	"github.com/dcwk/gophkeeper/internal/infra/db/pg"
 	"github.com/dcwk/gophkeeper/internal/infra/db/transaction"
 	"github.com/dcwk/gophkeeper/internal/repository"
-	"github.com/dcwk/gophkeeper/internal/repository/user"
+	userRepository "github.com/dcwk/gophkeeper/internal/repository/user"
+	"github.com/dcwk/gophkeeper/internal/service"
+	userService "github.com/dcwk/gophkeeper/internal/service/user"
 )
 
 type Container struct {
-	config     *config.ServerConf
-	controller *api.Controller
-	dbClient   db.Client
-	txManager  db.TxManager
-	userRepo   repository.UserRepository
+	config          *config.ServerConf
+	controller      *api.Controller
+	dbClient        db.Client
+	txManager       db.TxManager
+	userRepository_ repository.UserRepository
+	userService_    service.UserService
 }
 
 func newContainer() *Container {
@@ -54,16 +57,27 @@ func (container *Container) TxManager(ctx context.Context) db.TxManager {
 }
 
 func (container *Container) userRepository() repository.UserRepository {
-	if container.userRepo == nil {
-		container.userRepo = user.NewRepository(container.dbClient)
+	if container.userRepository_ == nil {
+		container.userRepository_ = userRepository.NewRepository(container.dbClient)
 	}
 
-	return container.userRepo
+	return container.userRepository_
+}
+
+func (container *Container) userService() service.UserService {
+	if container.userService_ == nil {
+		container.userService_ = userService.NewService(
+			container.userRepository(),
+			container.txManager,
+		)
+	}
+
+	return container.userService_
 }
 
 func (container *Container) Controller() *api.Controller {
 	if container.controller == nil {
-		container.controller = api.NewController(container.userRepository())
+		container.controller = api.NewController(container.userService())
 	}
 
 	return container.controller

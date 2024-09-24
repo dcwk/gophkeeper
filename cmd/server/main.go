@@ -5,12 +5,7 @@ import (
 	"log"
 
 	"github.com/dcwk/gophkeeper/internal/application"
-	pb "github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
-
-type GophkeeperServer struct {
-	pb.UnimplementedGophkeeperServer
-}
 
 func main() {
 	ctx := context.Background()
