@@ -2,7 +2,6 @@ package application
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net"
 
@@ -77,7 +76,7 @@ func (app *Application) initGrpcServer(ctx context.Context) error {
 
 	proto.RegisterGophkeeperServer(
 		app.grpcServer,
-		&GophkeeperServer{Conf: app.config},
+		app.container.Controller(),
 	)
 
 	return nil
@@ -101,10 +100,4 @@ func (app *Application) runGRPCServer() error {
 	}
 
 	return nil
-}
-
-func (s *GophkeeperServer) Register(ctx context.Context, req *proto.RegisterRequest) (*proto.RegisterResponse, error) {
-	fmt.Println(fmt.Sprintf("Success get data with login %s and password %s", req.Login, req.Password))
-
-	return &proto.RegisterResponse{UserId: "10"}, nil
 }
