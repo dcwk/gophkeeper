@@ -56,6 +56,66 @@ CVV код не храним в бд и не отображаем в форме 
 https://miro.com/app/board/uXjVKqtL9kQ=/?share_link_id=969528804638
 ![doc/es1.png](doc/es1.png)
 ### Таблицы бд
-![doc/image2.jpg](doc/image2.jpg)
+```mermaid
+erDiagram
+User ||--o{ Secret: userId
+Secret ||--o{ Metadata: secretId
+Secret ||--o{ Login: secretId
+Secret ||--o{ File: secretId
+Secret ||--o{ PayCard: secretId
 
+User {
+    int id PK
+    string login UK
+    string password
+    timestamp createdAt
+    timestamp updatedAt
+}
+
+Secret {
+    int id PK
+    int userId
+    enum secretType "LOGIN|TEXT|BINARY|PAYCARD"
+    double accrual
+    double withdrawal
+    timestamp createdAt
+    timestamp updatedAt
+}
+
+Metadata {
+    int id PK
+    int secretId
+    string key
+    string value
+    timestamp createdAt
+    timestamp updatedAt
+}
+
+Login {
+    int id PK
+    int secretId
+    string login
+    string password
+    timestamp createdAt
+    timestamp updatedAt
+}
+
+File {
+    int id PK
+    int secretId
+    string path
+    timestamp createdAt
+    timestamp updatedAt
+}
+
+PayCard {
+    int id PK
+    int secretId
+    string cardNumber
+    string holder
+    string dates
+    timestamp createdAt
+    timestamp updatedAt
+}
+```
 
