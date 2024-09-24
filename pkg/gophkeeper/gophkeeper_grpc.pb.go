@@ -2,13 +2,12 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.27.1
-// source: gophkeeper.proto
+// source: pkg/gophkeeper/gophkeeper.proto
 
-package gophkeeper
+package proto
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -530,5 +529,5 @@ var Gophkeeper_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "gophkeeper.proto",
+	Metadata: "pkg/gophkeeper/gophkeeper.proto",
 }
