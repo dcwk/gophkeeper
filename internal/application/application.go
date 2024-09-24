@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/dcwk/gophkeeper/internal/closer"
 	"github.com/dcwk/gophkeeper/internal/config"
 	"github.com/dcwk/gophkeeper/proto"
 
@@ -78,6 +79,11 @@ func (app *Application) initGrpcServer(ctx context.Context) error {
 }
 
 func (app *Application) Start() error {
+	defer func() {
+		closer.CloseAll()
+		closer.Wait()
+	}()
+
 	return app.runGRPCServer()
 }
 

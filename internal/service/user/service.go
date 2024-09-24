@@ -2,10 +2,10 @@ package user
 
 import "github.com/dcwk/gophkeeper/internal/repository"
 
-type service struct {
+type Service struct {
 	userRepository repository.UserRepository
 }
 
-func NewService(userRepository repository.UserRepository) *service {
-	return &service{userRepository: userRepository}
+func NewService(userRepository repository.UserRepository) *Service {
+	return &Service{userRepository: userRepository}
 }
