@@ -8,8 +8,11 @@ import (
 type Controller struct {
 	gophkeeper.UnimplementedGophkeeperServer
 	userService service.UserService
+	SecretService
 }
 
 func NewController(service service.UserService) *Controller {
-	return &Controller{userService: service}
+	return &Controller{
+		userService: service,
+	}
 }
