@@ -58,5 +58,5 @@ func doRegister(cmd *cobra.Command, args []string) {
 		log.Fatalf("Cannot register user: %v", err)
 	}
 
-	log.Printf("User successfully registered with id %s", resp.UserId)
+	log.Printf("User successfully registered with id %v", resp.UserId)
 }
