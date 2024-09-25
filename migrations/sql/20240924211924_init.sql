@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS "user"
 );
 
 CREATE TYPE secret_type AS ENUM (
-    'LOGIN',
+    'AUTH_PAIR',
     'TEXT',
     'BINARY',
     'PAYCARD'
@@ -76,11 +76,12 @@ CREATE TABLE IF NOT EXISTS "file"
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS public.user;
-DROP TABLE IF EXISTS public.secret;
-DROP TABLE IF EXISTS public.metadata;
 DROP TABLE IF EXISTS public.login;
 DROP TABLE IF EXISTS public.file;
 DROP TABLE IF EXISTS public.pay_card;
+DROP TABLE IF EXISTS public.metadata;
+DROP TABLE IF EXISTS public.secret;
+DROP TABLE IF EXISTS public.user;
+
 DROP TYPE secret_type;
 -- +goose StatementEnd
