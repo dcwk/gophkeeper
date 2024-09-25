@@ -19,18 +19,18 @@ import (
 type Container struct {
 	config          *config.ServerConf
 	controller      *api.Controller
-	dbClient        db.Client
-	txManager       db.TxManager
+	dbClient_       db.Client
+	txManager_      db.TxManager
 	userRepository_ repository.UserRepository
 	userService_    service.UserService
 }
 
-func newContainer() *Container {
-	return &Container{}
+func newContainer(conf *config.ServerConf) *Container {
+	return &Container{config: conf}
 }
 
-func (container *Container) DBClient(ctx context.Context) db.Client {
-	if container.dbClient == nil {
+func (container *Container) dbClient(ctx context.Context) db.Client {
+	if container.dbClient_ == nil {
 		client, err := pg.New(ctx, container.config.DatabaseDSN)
 		if err != nil {
 			log.Fatalf("failed to create db client: %v", err)
@@ -42,42 +42,42 @@ func (container *Container) DBClient(ctx context.Context) db.Client {
 		}
 		closer.Add(client.Close)
 
-		container.dbClient = client
+		container.dbClient_ = client
 	}
 
-	return container.dbClient
+	return container.dbClient_
 }
 
-func (container *Container) TxManager(ctx context.Context) db.TxManager {
-	if container.txManager == nil {
-		container.txManager = transaction.NewTransactionManager(container.DBClient(ctx).DB())
+func (container *Container) txManager(ctx context.Context) db.TxManager {
+	if container.txManager_ == nil {
+		container.txManager_ = transaction.NewTransactionManager(container.dbClient(ctx).DB())
 	}
 
-	return container.txManager
+	return container.txManager_
 }
 
-func (container *Container) userRepository() repository.UserRepository {
+func (container *Container) userRepository(ctx context.Context) repository.UserRepository {
 	if container.userRepository_ == nil {
-		container.userRepository_ = userRepository.NewRepository(container.dbClient)
+		container.userRepository_ = userRepository.NewRepository(container.dbClient(ctx))
 	}
 
 	return container.userRepository_
 }
 
-func (container *Container) userService() service.UserService {
+func (container *Container) userService(ctx context.Context) service.UserService {
 	if container.userService_ == nil {
 		container.userService_ = userService.NewService(
-			container.userRepository(),
-			container.txManager,
+			container.userRepository(ctx),
+			container.txManager(ctx),
 		)
 	}
 
 	return container.userService_
 }
 
-func (container *Container) Controller() *api.Controller {
+func (container *Container) Controller(ctx context.Context) *api.Controller {
 	if container.controller == nil {
-		container.controller = api.NewController(container.userService())
+		container.controller = api.NewController(container.userService(ctx))
 	}
 
 	return container.controller

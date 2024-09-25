@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/dcwk/gophkeeper/internal/entity"
 	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 

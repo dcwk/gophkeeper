@@ -60,7 +60,7 @@ func (app *Application) initConfig(ctx context.Context) error {
 }
 
 func (app *Application) initContainer(ctx context.Context) error {
-	app.container = newContainer()
+	app.container = newContainer(app.config)
 
 	return nil
 }
@@ -72,7 +72,7 @@ func (app *Application) initGrpcServer(ctx context.Context) error {
 
 	gophkeeper.RegisterGophkeeperServer(
 		app.grpcServer,
-		app.container.Controller(),
+		app.container.Controller(ctx),
 	)
 
 	return nil

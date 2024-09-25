@@ -2,15 +2,17 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
 
+	"github.com/dcwk/gophkeeper/internal/entity"
 	"github.com/dcwk/gophkeeper/internal/infra/db"
 	"github.com/dcwk/gophkeeper/internal/repository"
 )
 
 const (
-	tableName = "user"
+	tableName = "\"user\""
 
 	idColumn        = "id"
 	loginColumn     = "login"
@@ -30,8 +32,8 @@ func NewRepository(db db.Client) repository.UserRepository {
 func (r *repo) CreateUser(ctx context.Context, user entity.User) (int64, error) {
 	builder := sq.Insert(tableName).
 		PlaceholderFormat(sq.Dollar).
-		Columns(loginColumn, passwordColumn).
-		Values(user.Login, user.Password).
+		Columns(loginColumn, passwordColumn, createdAtColumn, updatedAtColumn).
+		Values(user.Login, user.Password, sq.Expr("NOW()"), sq.Expr("NOW()")).
 		Suffix("RETURNING id")
 
 	query, args, err := builder.ToSql()
@@ -47,6 +49,7 @@ func (r *repo) CreateUser(ctx context.Context, user entity.User) (int64, error) 
 	var id int64
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&id)
 	if err != nil {
+		fmt.Println(err.Error())
 		return 0, err
 	}
 

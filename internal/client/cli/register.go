@@ -47,7 +47,7 @@ func doRegister(cmd *cobra.Command, args []string) {
 		Password: password,
 	}
 
-	conn, err := grpc.NewClient("localhost:64445", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("localhost:8081", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal(err)
 	}
