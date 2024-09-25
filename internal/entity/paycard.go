@@ -1,4 +1,4 @@
-package model
+package entity
 
 type PayCard struct {
 	Id         int64

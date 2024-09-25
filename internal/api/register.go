@@ -4,12 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/dcwk/gophkeeper/internal/model"
 	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 func (c *Controller) Register(ctx context.Context, req *gophkeeper.RegisterRequest) (*gophkeeper.RegisterResponse, error) {
-	user := model.User{
+	user := entity.User{
 		Login:    req.Login,
 		Password: req.Password,
 	}

@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/dcwk/gophkeeper/internal/model"
+	"github.com/dcwk/gophkeeper/internal/entity"
 )
 
 type UserRepository interface {
-	CreateUser(ctx context.Context, user model.User) (int64, error)
+	CreateUser(ctx context.Context, user entity.User) (int64, error)
 }

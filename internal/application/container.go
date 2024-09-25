@@ -31,18 +31,18 @@ func newContainer() *Container {
 
 func (container *Container) DBClient(ctx context.Context) db.Client {
 	if container.dbClient == nil {
-		cl, err := pg.New(ctx, container.config.DatabaseDSN)
+		client, err := pg.New(ctx, container.config.DatabaseDSN)
 		if err != nil {
 			log.Fatalf("failed to create db client: %v", err)
 		}
 
-		err = cl.DB().Ping(ctx)
+		err = client.DB().Ping(ctx)
 		if err != nil {
 			log.Fatalf("ping error: %container", err.Error())
 		}
-		closer.Add(cl.Close)
+		closer.Add(client.Close)
 
-		container.dbClient = cl
+		container.dbClient = client
 	}
 
 	return container.dbClient

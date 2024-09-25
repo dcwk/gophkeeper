@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Metadata struct {
 	Id     int64

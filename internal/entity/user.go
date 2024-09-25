@@ -1,8 +1,7 @@
-package model
+package entity
 
-type Login struct {
+type User struct {
 	Id       int64
-	Secret   Secret
 	Login    string
 	Password string
 }

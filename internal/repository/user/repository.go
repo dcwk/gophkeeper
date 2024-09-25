@@ -6,7 +6,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 
 	"github.com/dcwk/gophkeeper/internal/infra/db"
-	"github.com/dcwk/gophkeeper/internal/model"
 	"github.com/dcwk/gophkeeper/internal/repository"
 )
 
@@ -28,7 +27,7 @@ func NewRepository(db db.Client) repository.UserRepository {
 	return &repo{db: db}
 }
 
-func (r *repo) CreateUser(ctx context.Context, user model.User) (int64, error) {
+func (r *repo) CreateUser(ctx context.Context, user entity.User) (int64, error) {
 	builder := sq.Insert(tableName).
 		PlaceholderFormat(sq.Dollar).
 		Columns(loginColumn, passwordColumn).
