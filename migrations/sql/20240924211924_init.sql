@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS "metadata"
     CONSTRAINT fk_secret_metadata FOREIGN KEY(secret_id) REFERENCES "secret"(id)
 );
 
-CREATE TABLE IF NOT EXISTS "login"
+CREATE TABLE IF NOT EXISTS "auth_pair"
 (
     id SERIAL PRIMARY KEY NOT NULL,
     secret_id bigint NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS "file"
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS public.login;
+DROP TABLE IF EXISTS public.auth_pair;
 DROP TABLE IF EXISTS public.file;
 DROP TABLE IF EXISTS public.pay_card;
 DROP TABLE IF EXISTS public.metadata;

@@ -13,3 +13,11 @@ type UserRepository interface {
 type SecretRepository interface {
 	CreateSecret(ctx context.Context, secret *entity.Secret) (int64, error)
 }
+
+type MetadataRepository interface {
+	CreateMetadata(ctx context.Context, metadata *entity.Metadata) (int64, error)
+}
+
+type AuthPairRepository interface {
+	CreateAuthPair(ctx context.Context, pair *entity.AuthPair) (int64, error)
+}

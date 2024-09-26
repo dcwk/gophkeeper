@@ -11,6 +11,8 @@ import (
 	"github.com/dcwk/gophkeeper/internal/infra/db/pg"
 	"github.com/dcwk/gophkeeper/internal/infra/db/transaction"
 	"github.com/dcwk/gophkeeper/internal/repository"
+	"github.com/dcwk/gophkeeper/internal/repository/auth_pair"
+	"github.com/dcwk/gophkeeper/internal/repository/metadata"
 	secretRepository "github.com/dcwk/gophkeeper/internal/repository/secret"
 	userRepository "github.com/dcwk/gophkeeper/internal/repository/user"
 	"github.com/dcwk/gophkeeper/internal/service"
@@ -19,14 +21,16 @@ import (
 )
 
 type Container struct {
-	config            *config.ServerConf
-	controller        *api.Controller
-	dbClient_         db.Client
-	txManager_        db.TxManager
-	userRepository_   repository.UserRepository
-	secretRepository_ repository.SecretRepository
-	userService_      service.UserService
-	secretService_    service.SecretService
+	config              *config.ServerConf
+	controller          *api.Controller
+	dbClient_           db.Client
+	txManager_          db.TxManager
+	userRepository_     repository.UserRepository
+	secretRepository_   repository.SecretRepository
+	authPairRepository_ repository.AuthPairRepository
+	metadataRepository_ repository.MetadataRepository
+	userService_        service.UserService
+	secretService_      service.SecretService
 }
 
 func newContainer(conf *config.ServerConf) *Container {
@@ -76,6 +80,22 @@ func (container *Container) secretRepository(ctx context.Context) repository.Sec
 	return container.secretRepository_
 }
 
+func (container *Container) authPairRepository(ctx context.Context) repository.AuthPairRepository {
+	if container.authPairRepository_ == nil {
+		container.authPairRepository_ = auth_pair.NewRepository(container.dbClient(ctx))
+	}
+
+	return container.authPairRepository_
+}
+
+func (container *Container) metadataRepository(ctx context.Context) repository.MetadataRepository {
+	if container.metadataRepository_ == nil {
+		container.metadataRepository_ = metadata.NewRepository(container.dbClient(ctx))
+	}
+
+	return container.metadataRepository_
+}
+
 func (container *Container) userService(ctx context.Context) service.UserService {
 	if container.userService_ == nil {
 		container.userService_ = userService.NewService(
@@ -91,6 +111,8 @@ func (container *Container) secretService(ctx context.Context) service.SecretSer
 	if container.secretService_ == nil {
 		container.secretService_ = secretService.NewService(
 			container.secretRepository(ctx),
+			container.authPairRepository(ctx),
+			container.metadataRepository(ctx),
 			container.txManager(ctx),
 		)
 	}

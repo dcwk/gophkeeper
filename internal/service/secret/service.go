@@ -6,16 +6,22 @@ import (
 )
 
 type Service struct {
-	secretRepository repository.SecretRepository
-	txManager        db.TxManager
+	secretRepository   repository.SecretRepository
+	authPairRepository repository.AuthPairRepository
+	metadataRepository repository.MetadataRepository
+	txManager          db.TxManager
 }
 
 func NewService(
 	secretRepository repository.SecretRepository,
+	authPairRepository repository.AuthPairRepository,
+	metadataRepository repository.MetadataRepository,
 	txManager db.TxManager,
 ) *Service {
 	return &Service{
-		secretRepository: secretRepository,
-		txManager:        txManager,
+		secretRepository:   secretRepository,
+		authPairRepository: authPairRepository,
+		metadataRepository: metadataRepository,
+		txManager:          txManager,
 	}
 }
