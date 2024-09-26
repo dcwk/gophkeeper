@@ -2,6 +2,9 @@ package secret
 
 import (
 	"context"
+	"fmt"
+
+	sq "github.com/Masterminds/squirrel"
 
 	"github.com/dcwk/gophkeeper/internal/entity"
 	"github.com/dcwk/gophkeeper/internal/infra/db"
@@ -12,7 +15,7 @@ const (
 	tableName = "secret"
 
 	idColumn        = "id"
-	userIDColumn    = "login"
+	userIDColumn    = "user_id"
 	typeColumn      = "type"
 	nameColumn      = "name"
 	createdAtColumn = "created_at"
@@ -28,5 +31,28 @@ func NewRepository(db db.Client) repository.SecretRepository {
 }
 
 func (r *repo) CreateSecret(ctx context.Context, secret *entity.Secret) (int64, error) {
-	return 10, nil
+	builder := sq.Insert(tableName).
+		PlaceholderFormat(sq.Dollar).
+		Columns(userIDColumn, typeColumn, nameColumn, createdAtColumn, updatedAtColumn).
+		Values("1", secret.SecretType, secret.Name, sq.Expr("NOW()"), sq.Expr("NOW()")).
+		Suffix("RETURNING id")
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	q := db.Query{
+		Name:     "secret_repository.CreateSecret",
+		QueryRaw: query,
+	}
+
+	var id int64
+	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&id)
+	if err != nil {
+		fmt.Println(err.Error())
+		return 0, err
+	}
+
+	return id, nil
 }
