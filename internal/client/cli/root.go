@@ -22,4 +22,5 @@ func init() {
 	initRegister(rootCmd)
 	initAuth(rootCmd)
 	initGetUsersSecretsList()
+	initCreateAuthPair(rootCmd)
 }
