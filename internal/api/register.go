@@ -14,7 +14,7 @@ func (c *Controller) Register(ctx context.Context, req *gophkeeper.RegisterReque
 		Password: req.Password,
 	}
 
-	userID, err := c.userService.Register(ctx, user)
+	userID, err := c.userService.Register(ctx, &user)
 	if err != nil {
 		return nil, err
 	}

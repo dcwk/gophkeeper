@@ -1,4 +1,4 @@
-package user
+package secret
 
 import (
 	"github.com/dcwk/gophkeeper/internal/infra/db"

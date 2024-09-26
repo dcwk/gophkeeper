@@ -11,18 +11,22 @@ import (
 	"github.com/dcwk/gophkeeper/internal/infra/db/pg"
 	"github.com/dcwk/gophkeeper/internal/infra/db/transaction"
 	"github.com/dcwk/gophkeeper/internal/repository"
+	secretRepository "github.com/dcwk/gophkeeper/internal/repository/secret"
 	userRepository "github.com/dcwk/gophkeeper/internal/repository/user"
 	"github.com/dcwk/gophkeeper/internal/service"
+	secretService "github.com/dcwk/gophkeeper/internal/service/secret"
 	userService "github.com/dcwk/gophkeeper/internal/service/user"
 )
 
 type Container struct {
-	config          *config.ServerConf
-	controller      *api.Controller
-	dbClient_       db.Client
-	txManager_      db.TxManager
-	userRepository_ repository.UserRepository
-	userService_    service.UserService
+	config            *config.ServerConf
+	controller        *api.Controller
+	dbClient_         db.Client
+	txManager_        db.TxManager
+	userRepository_   repository.UserRepository
+	secretRepository_ repository.SecretRepository
+	userService_      service.UserService
+	secretService_    service.SecretService
 }
 
 func newContainer(conf *config.ServerConf) *Container {
@@ -64,6 +68,14 @@ func (container *Container) userRepository(ctx context.Context) repository.UserR
 	return container.userRepository_
 }
 
+func (container *Container) secretRepository(ctx context.Context) repository.SecretRepository {
+	if container.secretRepository_ == nil {
+		container.secretRepository_ = secretRepository.NewRepository(container.dbClient(ctx))
+	}
+
+	return container.secretRepository_
+}
+
 func (container *Container) userService(ctx context.Context) service.UserService {
 	if container.userService_ == nil {
 		container.userService_ = userService.NewService(
@@ -75,9 +87,23 @@ func (container *Container) userService(ctx context.Context) service.UserService
 	return container.userService_
 }
 
+func (container *Container) secretService(ctx context.Context) service.SecretService {
+	if container.secretService_ == nil {
+		container.secretService_ = secretService.NewService(
+			container.secretRepository(ctx),
+			container.txManager(ctx),
+		)
+	}
+
+	return container.secretService_
+}
+
 func (container *Container) Controller(ctx context.Context) *api.Controller {
 	if container.controller == nil {
-		container.controller = api.NewController(container.userService(ctx))
+		container.controller = api.NewController(
+			container.userService(ctx),
+			container.secretService(ctx),
+		)
 	}
 
 	return container.controller

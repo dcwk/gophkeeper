@@ -7,12 +7,16 @@ import (
 
 type Controller struct {
 	gophkeeper.UnimplementedGophkeeperServer
-	userService service.UserService
-	SecretService
+	userService   service.UserService
+	secretService service.SecretService
 }
 
-func NewController(service service.UserService) *Controller {
+func NewController(
+	userService service.UserService,
+	secretService service.SecretService,
+) *Controller {
 	return &Controller{
-		userService: service,
+		userService:   userService,
+		secretService: secretService,
 	}
 }

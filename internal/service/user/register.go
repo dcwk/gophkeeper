@@ -6,7 +6,7 @@ import (
 	"github.com/dcwk/gophkeeper/internal/entity"
 )
 
-func (s *Service) Register(ctx context.Context, user entity.User) (int64, error) {
+func (s *Service) Register(ctx context.Context, user *entity.User) (int64, error) {
 	err := user.HashPassword()
 	if err != nil {
 		return 0, err

@@ -29,7 +29,7 @@ func NewRepository(db db.Client) repository.UserRepository {
 	return &repo{db: db}
 }
 
-func (r *repo) CreateUser(ctx context.Context, user entity.User) (int64, error) {
+func (r *repo) CreateUser(ctx context.Context, user *entity.User) (int64, error) {
 	builder := sq.Insert(tableName).
 		PlaceholderFormat(sq.Dollar).
 		Columns(loginColumn, passwordColumn, createdAtColumn, updatedAtColumn).
