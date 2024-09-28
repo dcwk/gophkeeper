@@ -1,9 +1,14 @@
 package cli
 
 import (
+	"context"
 	"log"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 func initGetUsersSecretsList() {
@@ -16,5 +21,18 @@ func initGetUsersSecretsList() {
 }
 
 func doGetUsersSecretsList(_ *cobra.Command, _ []string) {
-	log.Printf("User's secrets list")
+	GetUserSecretsList := gophkeeper.GetUserSecretsRequest{}
+	conn, err := grpc.NewClient("localhost:8081", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client := gophkeeper.NewGophkeeperClient(conn)
+	resp, err := client.GetUserSecretsList(context.Background(), &GetUserSecretsList)
+	if err != nil {
+		log.Fatalf("Cannot get secrets list: %v", err)
+	}
+
+	log.Printf("User's secrets list %v", resp)
+
 }
