@@ -9,6 +9,8 @@ import (
 	"github.com/dcwk/gophkeeper/internal/entity"
 	"github.com/dcwk/gophkeeper/internal/infra/db"
 	"github.com/dcwk/gophkeeper/internal/repository"
+	"github.com/dcwk/gophkeeper/internal/repository/user/converter"
+	"github.com/dcwk/gophkeeper/internal/repository/user/model"
 )
 
 const (
@@ -54,4 +56,29 @@ func (r *repo) CreateUser(ctx context.Context, user *entity.User) (int64, error)
 	}
 
 	return id, nil
+}
+
+func (r *repo) GeUserByLogin(ctx context.Context, login string) (*entity.User, error) {
+	builder := sq.Select(idColumn, loginColumn, passwordColumn, createdAtColumn, updatedAtColumn).
+		PlaceholderFormat(sq.Dollar).
+		From(tableName).
+		Where(sq.Eq{loginColumn: login})
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	q := db.Query{
+		Name:     "user_repository.GeUserByLogin",
+		QueryRaw: query,
+	}
+
+	var user model.User
+	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	return converter.ToUserFromRepo(&user), nil
 }

@@ -8,6 +8,7 @@ import (
 
 type UserRepository interface {
 	CreateUser(ctx context.Context, user *entity.User) (int64, error)
+	GeUserByLogin(ctx context.Context, login string) (*entity.User, error)
 }
 
 type SecretRepository interface {

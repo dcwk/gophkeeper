@@ -8,6 +8,7 @@ import (
 
 type UserService interface {
 	Register(ctx context.Context, user *entity.User) (int64, error)
+	Auth(ctx context.Context, user *entity.User) (string, error)
 }
 
 type SecretService interface {
