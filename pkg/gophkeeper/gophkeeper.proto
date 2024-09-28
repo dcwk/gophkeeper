@@ -27,7 +27,13 @@ message RegisterResponse {
 message GetUserSecretsRequest {
 }
 
+message Secret {
+  string name = 1;
+  string type = 2;
+}
+
 message GetUserSecretsResponse {
+  array
 }
 
 message SaveAuthPairRequest {

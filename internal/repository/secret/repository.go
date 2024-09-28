@@ -9,6 +9,8 @@ import (
 	"github.com/dcwk/gophkeeper/internal/entity"
 	"github.com/dcwk/gophkeeper/internal/infra/db"
 	"github.com/dcwk/gophkeeper/internal/repository"
+	"github.com/dcwk/gophkeeper/internal/repository/secret/converter"
+	"github.com/dcwk/gophkeeper/internal/repository/secret/model"
 )
 
 const (
@@ -55,4 +57,45 @@ func (r *repo) CreateSecret(ctx context.Context, secret *entity.Secret) (int64, 
 	}
 
 	return id, nil
+}
+
+func (r *repo) GetSecretsList(ctx context.Context) ([]*entity.Secret, error) {
+	builder := sq.Select(idColumn, userIDColumn, typeColumn, nameColumn, createdAtColumn, updatedAtColumn).
+		PlaceholderFormat(sq.Dollar).
+		From(tableName)
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	q := db.Query{
+		Name:     "secret_repository.GetSecretsList",
+		QueryRaw: query,
+	}
+
+	rows, err := r.db.DB().QueryContext(ctx, q, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	secrets := []*entity.Secret{}
+	for rows.Next() {
+		var secret model.Secret
+		err := rows.Scan(
+			&secret.ID,
+			&secret.UserID,
+			&secret.Type,
+			&secret.Name,
+			&secret.CreatedAt,
+			&secret.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		secrets = append(secrets, converter.ToSecretFromRepo(&secret))
+	}
+
+	return secrets, nil
 }

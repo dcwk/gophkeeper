@@ -13,6 +13,7 @@ type UserRepository interface {
 
 type SecretRepository interface {
 	CreateSecret(ctx context.Context, secret *entity.Secret) (int64, error)
+	GetSecretsList(ctx context.Context) ([]*entity.Secret, error)
 }
 
 type MetadataRepository interface {

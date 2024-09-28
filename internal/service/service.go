@@ -13,4 +13,5 @@ type UserService interface {
 
 type SecretService interface {
 	CreateAuthPair(ctx context.Context, authPair *entity.AuthPair) (int64, error)
+	GetSecretsList(ctx context.Context) ([]*entity.Secret, error)
 }
