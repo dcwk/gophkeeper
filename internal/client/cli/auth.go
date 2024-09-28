@@ -1,9 +1,14 @@
 package cli
 
 import (
+	"context"
 	"log"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
 func initAuth(rootCmd *cobra.Command) {
@@ -36,5 +41,20 @@ func doAuth(cmd *cobra.Command, args []string) {
 		log.Fatalf("unable to get 'password' flag: %v", err)
 	}
 
-	log.Printf("Authenticated user with login: %s, pass: %s", login, password)
+	authRequest := &gophkeeper.AuthRequest{
+		Login:    login,
+		Password: password,
+	}
+
+	conn, err := grpc.NewClient("localhost:8081", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	client := gophkeeper.NewGophkeeperClient(conn)
+	resp, err := client.Auth(context.Background(), authRequest)
+	if err != nil {
+		log.Fatalf("Cannot auth user: %v", err)
+	}
+	log.Printf("User's jwt token", resp.JwtToken)
 }
