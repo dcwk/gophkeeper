@@ -75,7 +75,7 @@ func (r *repo) GeUserByLogin(ctx context.Context, login string) (*entity.User, e
 	}
 
 	var user model.User
-	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&user)
+	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&user.Id, &user.Login, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
