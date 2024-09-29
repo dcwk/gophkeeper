@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -33,6 +34,8 @@ func doGetUsersSecretsList(_ *cobra.Command, _ []string) {
 		log.Fatalf("Cannot get secrets list: %v", err)
 	}
 
-	log.Printf("User's secrets list %v", resp)
-
+	fmt.Println("Secrets list:")
+	for _, secret := range resp.Secrets {
+		fmt.Println(secret)
+	}
 }

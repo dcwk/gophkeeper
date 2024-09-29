@@ -11,5 +11,6 @@ func ToSecretFromRepo(secret *model.Secret) *entity.Secret {
 		User:       entity.User{ID: secret.UserID},
 		SecretType: secret.Type,
 		Name:       secret.Name,
+		CreatedAt:  secret.CreatedAt,
 	}
 }

@@ -30,10 +30,11 @@ message GetUserSecretsRequest {
 message Secret {
   string name = 1;
   string type = 2;
+  string created_at = 3;
 }
 
 message GetUserSecretsResponse {
-  array
+  repeated Secret secrets = 1;
 }
 
 message SaveAuthPairRequest {

@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"time"
 
 	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
@@ -12,5 +13,16 @@ func (c *Controller) GetUserSecretsList(ctx context.Context, req *gophkeeper.Get
 		return nil, err
 	}
 
-	return &gophkeeper.GetUserSecretsResponse{}
+	respSecrets := []*gophkeeper.Secret{}
+	for _, secret := range secrets {
+		respSecret := gophkeeper.Secret{
+			Name:      secret.Name,
+			Type:      secret.SecretType,
+			CreatedAt: secret.CreatedAt.Format(time.RFC3339),
+		}
+
+		respSecrets = append(respSecrets, &respSecret)
+	}
+
+	return &gophkeeper.GetUserSecretsResponse{Secrets: respSecrets}, nil
 }

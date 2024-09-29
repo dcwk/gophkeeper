@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 const (
 	AUTH_PAIR_TYPE = "AUTH_PAIR"
 	TEXT_TYPE      = "TEXT"
@@ -12,6 +14,7 @@ type Secret struct {
 	User       User
 	SecretType string
 	Name       string
+	CreatedAt  time.Time
 	MetaData   []*Metadata
 }
 
