@@ -126,7 +126,7 @@ service Gophkeeper {
   rpc GetUserSecretsList(GetUserSecretsRequest) returns (GetUserSecretsResponse);
   rpc SaveAuthPair(SaveAuthPairRequest) returns (SaveAuthPairResponse);
   rpc SavePayCard(SavePayCardRequest) returns (SavePayCardResponse);
-  rpc SaveBinaryData(stream google.protobuf.StringValue) returns (SaveBinaryDataResponse);
+  rpc SaveBinaryData(stream SaveBinaryDataRequest) returns (SaveBinaryDataResponse);
   rpc SaveTextData(stream google.protobuf.StringValue) returns (SaveTextDataResponse);
   rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse);
   rpc GetAuthPair(GetAuthPairRequest) returns (GetAuthPairResponse);

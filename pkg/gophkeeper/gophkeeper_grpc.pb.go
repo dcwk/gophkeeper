@@ -43,7 +43,7 @@ type GophkeeperClient interface {
 	GetUserSecretsList(ctx context.Context, in *GetUserSecretsRequest, opts ...grpc.CallOption) (*GetUserSecretsResponse, error)
 	SaveAuthPair(ctx context.Context, in *SaveAuthPairRequest, opts ...grpc.CallOption) (*SaveAuthPairResponse, error)
 	SavePayCard(ctx context.Context, in *SavePayCardRequest, opts ...grpc.CallOption) (*SavePayCardResponse, error)
-	SaveBinaryData(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[wrapperspb.StringValue, SaveBinaryDataResponse], error)
+	SaveBinaryData(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[SaveBinaryDataRequest, SaveBinaryDataResponse], error)
 	SaveTextData(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[wrapperspb.StringValue, SaveTextDataResponse], error)
 	DeleteItem(ctx context.Context, in *DeleteItemRequest, opts ...grpc.CallOption) (*DeleteItemResponse, error)
 	GetAuthPair(ctx context.Context, in *GetAuthPairRequest, opts ...grpc.CallOption) (*GetAuthPairResponse, error)
@@ -110,18 +110,18 @@ func (c *gophkeeperClient) SavePayCard(ctx context.Context, in *SavePayCardReque
 	return out, nil
 }
 
-func (c *gophkeeperClient) SaveBinaryData(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[wrapperspb.StringValue, SaveBinaryDataResponse], error) {
+func (c *gophkeeperClient) SaveBinaryData(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[SaveBinaryDataRequest, SaveBinaryDataResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	stream, err := c.cc.NewStream(ctx, &Gophkeeper_ServiceDesc.Streams[0], Gophkeeper_SaveBinaryData_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[wrapperspb.StringValue, SaveBinaryDataResponse]{ClientStream: stream}
+	x := &grpc.GenericClientStream[SaveBinaryDataRequest, SaveBinaryDataResponse]{ClientStream: stream}
 	return x, nil
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Gophkeeper_SaveBinaryDataClient = grpc.ClientStreamingClient[wrapperspb.StringValue, SaveBinaryDataResponse]
+type Gophkeeper_SaveBinaryDataClient = grpc.ClientStreamingClient[SaveBinaryDataRequest, SaveBinaryDataResponse]
 
 func (c *gophkeeperClient) SaveTextData(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[wrapperspb.StringValue, SaveTextDataResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -213,7 +213,7 @@ type GophkeeperServer interface {
 	GetUserSecretsList(context.Context, *GetUserSecretsRequest) (*GetUserSecretsResponse, error)
 	SaveAuthPair(context.Context, *SaveAuthPairRequest) (*SaveAuthPairResponse, error)
 	SavePayCard(context.Context, *SavePayCardRequest) (*SavePayCardResponse, error)
-	SaveBinaryData(grpc.ClientStreamingServer[wrapperspb.StringValue, SaveBinaryDataResponse]) error
+	SaveBinaryData(grpc.ClientStreamingServer[SaveBinaryDataRequest, SaveBinaryDataResponse]) error
 	SaveTextData(grpc.ClientStreamingServer[wrapperspb.StringValue, SaveTextDataResponse]) error
 	DeleteItem(context.Context, *DeleteItemRequest) (*DeleteItemResponse, error)
 	GetAuthPair(context.Context, *GetAuthPairRequest) (*GetAuthPairResponse, error)
@@ -245,7 +245,7 @@ func (UnimplementedGophkeeperServer) SaveAuthPair(context.Context, *SaveAuthPair
 func (UnimplementedGophkeeperServer) SavePayCard(context.Context, *SavePayCardRequest) (*SavePayCardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SavePayCard not implemented")
 }
-func (UnimplementedGophkeeperServer) SaveBinaryData(grpc.ClientStreamingServer[wrapperspb.StringValue, SaveBinaryDataResponse]) error {
+func (UnimplementedGophkeeperServer) SaveBinaryData(grpc.ClientStreamingServer[SaveBinaryDataRequest, SaveBinaryDataResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method SaveBinaryData not implemented")
 }
 func (UnimplementedGophkeeperServer) SaveTextData(grpc.ClientStreamingServer[wrapperspb.StringValue, SaveTextDataResponse]) error {
@@ -378,11 +378,11 @@ func _Gophkeeper_SavePayCard_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _Gophkeeper_SaveBinaryData_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(GophkeeperServer).SaveBinaryData(&grpc.GenericServerStream[wrapperspb.StringValue, SaveBinaryDataResponse]{ServerStream: stream})
+	return srv.(GophkeeperServer).SaveBinaryData(&grpc.GenericServerStream[SaveBinaryDataRequest, SaveBinaryDataResponse]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type Gophkeeper_SaveBinaryDataServer = grpc.ClientStreamingServer[wrapperspb.StringValue, SaveBinaryDataResponse]
+type Gophkeeper_SaveBinaryDataServer = grpc.ClientStreamingServer[SaveBinaryDataRequest, SaveBinaryDataResponse]
 
 func _Gophkeeper_SaveTextData_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(GophkeeperServer).SaveTextData(&grpc.GenericServerStream[wrapperspb.StringValue, SaveTextDataResponse]{ServerStream: stream})
