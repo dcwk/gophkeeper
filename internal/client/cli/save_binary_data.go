@@ -15,7 +15,7 @@ import (
 	"github.com/dcwk/gophkeeper/pkg/gophkeeper"
 )
 
-func initSaveBinaryDataCmd(rootCmd *cobra.Command) {
+func initSaveBinaryData(rootCmd *cobra.Command) {
 	saveBinaryData := &cobra.Command{
 		Use:   "save-binary-data",
 		Short: "Save user's binary data",
@@ -24,9 +24,9 @@ func initSaveBinaryDataCmd(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(saveBinaryData)
 
 	saveBinaryData.Flags().StringP("name", "n", "", "Secret name")
-	//if err := saveBinaryData.MarkFlagRequired("name"); err != nil {
-	//	log.Fatalf("unable to mark 'name' flag as required")
-	//}
+	if err := saveBinaryData.MarkFlagRequired("name"); err != nil {
+		log.Fatalf("unable to mark 'name' flag as required")
+	}
 
 	saveBinaryData.Flags().StringP("file", "f", "", "Path to the binary data file")
 	if err := saveBinaryData.MarkFlagRequired("name"); err != nil {
@@ -37,10 +37,10 @@ func initSaveBinaryDataCmd(rootCmd *cobra.Command) {
 }
 
 func doSaveBinaryData(cmd *cobra.Command, args []string) {
-	//name, err := cmd.Flags().GetString("name")
-	//if err != nil {
-	//	log.Fatalf("unable to get 'name' flag: %v", err)
-	//}
+	_, err := cmd.Flags().GetString("name")
+	if err != nil {
+		log.Fatalf("unable to get 'name' flag: %v", err)
+	}
 
 	filePath, err := cmd.Flags().GetString("file")
 	if err != nil {
