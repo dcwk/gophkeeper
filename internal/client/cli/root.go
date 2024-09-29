@@ -23,4 +23,5 @@ func init() {
 	initAuth(rootCmd)
 	initGetUsersSecretsList()
 	initCreateAuthPair(rootCmd)
+	initSaveBinaryData(rootCmd)
 }
