@@ -10,19 +10,19 @@ import (
 	"github.com/dcwk/gophkeeper/internal/infra/db/pg"
 )
 
-type manager struct {
+type TxManager struct {
 	db db.Transactor
 }
 
 // NewTransactionManager создает новый менеджер транзакций, который удовлетворяет интерфейсу db.TxManager
 func NewTransactionManager(db db.Transactor) db.TxManager {
-	return &manager{
+	return &TxManager{
 		db: db,
 	}
 }
 
 // transaction основная функция, которая выполняет указанный пользователем обработчик в транзакции
-func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Handler) (err error) {
+func (m *TxManager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Handler) (err error) {
 	// Если это вложенная транзакция, пропускаем инициацию новой транзакции и выполняем обработчик.
 	tx, ok := ctx.Value(pg.TxKey).(pgx.Tx)
 	if ok {
@@ -73,7 +73,7 @@ func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Han
 	return err
 }
 
-func (m *manager) ReadCommitted(ctx context.Context, f db.Handler) error {
+func (m *TxManager) ReadCommitted(ctx context.Context, f db.Handler) error {
 	txOpts := pgx.TxOptions{IsoLevel: pgx.ReadCommitted}
 	return m.transaction(ctx, txOpts, f)
 }

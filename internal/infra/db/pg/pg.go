@@ -45,6 +45,8 @@ func (p *pg) ScanAllContext(ctx context.Context, dest interface{}, q db.Query, a
 		return err
 	}
 
+	defer rows.Close()
+
 	return pgxscan.ScanAll(dest, rows)
 }
 

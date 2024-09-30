@@ -3,7 +3,6 @@ package cli
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -112,5 +111,5 @@ func doSaveBinaryData(cmd *cobra.Command, args []string) {
 		log.Fatal("cannot receive response: ", err)
 	}
 
-	fmt.Println(fmt.Sprintf("successfully saved binary data with id %v and size %v", resp.FileId, resp.Size))
+	log.Printf("successfully saved binary data with id %v and size %v", resp.FileId, resp.Size)
 }
