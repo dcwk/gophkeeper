@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+
+package gophkeeper;
+
+option go_package = "gophkeeper/gophkeeper";
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string jwt_token = 1;
+}
+
+message RegisterRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
+  int64 user_id = 1;
+}
+
+message GetUserSecretsRequest {
+}
+
+message Secret {
+  string name = 1;
+  string type = 2;
+  string created_at = 3;
+}
+
+message GetUserSecretsResponse {
+  repeated Secret secrets = 1;
+}
+
+message SaveAuthPairRequest {
+  string secretName = 1;
+  string login = 2;
+  string password = 3;
+  string metadata = 4;
+}
+
+message SaveAuthPairResponse {
+  int64 secret_id = 1;
+}
+
+message SavePayCardRequest {
+}
+
+message SavePayCardResponse {
+}
+
+enum BinaryType {
+  IMAGE_FILE = 0;
+  VIDEO_FILE = 1;
+  TEXT_FILE = 2;
+}
+
+message BinaryInfo {
+  string ext = 1;
+  BinaryType type = 2;
+}
+
+message SaveBinaryDataRequest {
+  oneof data {
+    BinaryInfo info = 1;
+    bytes chunk_data = 2;
+  }
+}
+
+message SaveBinaryDataResponse {
+  int64 file_id = 1;
+  int64 size = 2;
+}
+
+message SaveTextDataResponse {
+  int64 file_id = 1;
+}
+
+enum Type {
+  AUTH_PAIR = 0;
+  BINARY = 1;
+  TEXT = 2;
+  PAY_CARD = 3;
+}
+
+message DeleteItemRequest {
+  int64 id = 1;
+  Type type = 2;
+}
+
+message DeleteItemResponse {
+}
+
+message GetAuthPairRequest {
+  int64 id = 1;
+}
+
+message GetAuthPairResponse {
+  string login = 1;
+  string password = 2;
+}
+
+message GetPayCardRequest {
+  int64 id = 1;
+}
+
+message GetPayCardResponse {
+}
+
+message GetBinaryDataRequest {
+  int64 id = 1;
+}
+
+message GetTextDataRequest {
+  int64 id = 1;
+}
+
+service Gophkeeper {
+  rpc Auth(AuthRequest) returns (AuthResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc GetUserSecretsList(GetUserSecretsRequest) returns (GetUserSecretsResponse);
+  rpc SaveAuthPair(SaveAuthPairRequest) returns (SaveAuthPairResponse);
+  rpc SavePayCard(SavePayCardRequest) returns (SavePayCardResponse);
+  rpc SaveBinaryData(stream SaveBinaryDataRequest) returns (SaveBinaryDataResponse);
+  rpc SaveTextData(stream google.protobuf.StringValue) returns (SaveTextDataResponse);
+  rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse);
+  rpc GetAuthPair(GetAuthPairRequest) returns (GetAuthPairResponse);
+  rpc GetPayCard(GetPayCardRequest) returns (GetPayCardResponse);
+  rpc GetBinaryData(GetBinaryDataRequest) returns (stream google.protobuf.StringValue);
+  rpc GetTextData(GetTextDataRequest) returns (stream google.protobuf.StringValue);
+}
